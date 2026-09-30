@@ -16,9 +16,9 @@
 
 <header class="topbar">
   <button class="btn sidebar-toggle" id="menu">目录</button>
-  <div class="brand">
+  <a class="brand" href="#/" title="回到首页">
     <span class="jp">RADWIMPS</span><span class="cn">詞解</span>
-  </div>
+  </a>
   <div class="searchbox">
     <input id="q" placeholder="搜索歌词 / 译文 / 解读…">
     <button class="btn" id="btn-search">搜索</button>
@@ -33,6 +33,8 @@
   <aside class="sidebar" id="sidebar"></aside>
   <main class="main" id="main"><div class="empty">载入中…</div></main>
 </div>
+
+<button class="fab" id="fab" type="button">回到首页</button>
 
 <script src="data/albums.js"></script>
 <script src="data/manifest.js"></script>

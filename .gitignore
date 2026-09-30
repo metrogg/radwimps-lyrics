@@ -2,6 +2,8 @@
 _check.txt
 _smoke.txt
 _env.txt
+_verify.txt
+verify-report.txt
 *.tmp
 *.log
 

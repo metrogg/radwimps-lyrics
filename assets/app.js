@@ -52,6 +52,24 @@
       .replace(/\s+/g, ' ');
   }
 
+  /* 专辑色相 */
+  function albumColor(al) {
+    return (al && al.accent) ? al.accent : '#b04a3c';
+  }
+
+  /* 封面：albums.js 填了 cover 图片就显示图片，
+     否则用 accent + mark 生成极简封面（不依赖任何外部资源） */
+  function coverHtml(al, size) {
+    var cls = 'cover ' + (size || 'm');
+    var accent = albumColor(al);
+    if (al && al.cover) {
+      return '<span class="' + cls + ' photo" style="--album:' + accent + '">' +
+             '<img src="' + esc(al.cover) + '" alt="' + esc(al.title) + ' 封面"></span>';
+    }
+    return '<span class="' + cls + '" style="--album:' + accent + '" aria-hidden="true">' +
+           '<span>' + esc((al && al.mark) ? al.mark : '·') + '</span></span>';
+  }
+
   function songById(id) {
     for (var i = 0; i < state.songs.length; i++) {
       if (state.songs[i].id === id) return state.songs[i];
@@ -107,7 +125,7 @@
       { name: 'SOUNDTRACKS', kind: 'ost' },
       { name: 'SINGLES / 其他', kind: 'single' }
     ];
-    var html = '';
+    var html = '<a class="side-home" href="#/">首页 · 全部收录</a>';
 
     groups.forEach(function (g) {
       var list = state.albums.filter(function (a) { return (a.kind || 'album') === g.kind; });
@@ -117,11 +135,11 @@
         var n = songCount(a);
         var open = state.openAlbum === a.id;
         html += '<div class="album-item' + (open ? ' open' : '') + '">';
-        html += '<div class="album-head" data-album="' + a.id + '">' +
-          '<span class="arrow">' + (open ? '▾' : '▸') + '</span>' +
+        html += '<div class="album-head' + (open ? ' active' : '') + '" data-album="' + a.id + '">' +
+          coverHtml(a, 's') +
           '<span class="t jpfont">' + esc(a.title) + '</span>' +
-          '<span class="y">' + a.year + '</span>' +
-          (a.total ? '<span class="y">' + n + '/' + a.total + '</span>' : '') +
+          (a.total ? '<span class="y">' + n + '/' + a.total + '</span>' : '<span class="y">' + a.year + '</span>') +
+          '<span class="arrow">' + (open ? '▾' : '▸') + '</span>' +
           '</div>';
         html += '<div class="track-list">';
         if (a.tracks && a.tracks.length) {
@@ -165,6 +183,11 @@
 
   function markSidebarCurrent() {
     var main = document.getElementById('sidebar');
+    var home = main.querySelector('.side-home');
+    if (home) {
+      var h = location.hash;
+      home.classList.toggle('active', !h || h === '#/' || h === '#' || h.indexOf('#/search') === 0);
+    }
     main.querySelectorAll('.album-head').forEach(function (el) {
       el.classList.toggle('active', location.hash.indexOf('#/album/' + el.dataset.album) === 0);
     });
@@ -192,19 +215,38 @@
         '<div class="kpi"><div class="n">' + state.albums.length + '</div><div class="l">专辑档案</div></div>' +
       '</div></div>';
 
+    /* 专辑墙：已有收录的专辑 */
+    var touched = state.albums.filter(function (a) { return songCount(a) > 0; });
+    if (touched.length) {
+      html += '<div class="sec-title">专辑</div><div class="album-wall">';
+      touched.forEach(function (a) {
+        var n = songCount(a);
+        var pct = a.total ? Math.round(n / a.total * 100) : 0;
+        html += '<div class="album-tile" data-album="' + a.id + '" style="--album:' + albumColor(a) + '">' +
+          coverHtml(a, 'm') +
+          '<div class="txt">' +
+            '<div class="t jpfont">' + esc(a.title) + '</div>' +
+            '<div class="y">' + esc(a.date) + (a.total ? ' ・ ' + n + '/' + a.total + ' 曲' : '') + '</div>' +
+            (a.total ? '<div class="prog"><i style="width:' + pct + '%"></i></div>' : '') +
+          '</div>' +
+          '</div>';
+      });
+      html += '</div>';
+    }
+
     if (state.songs.length) {
       html += '<div class="sec-title">已收录的歌</div><div class="cards">';
       state.songs.forEach(function (s) {
         var al = albumById(s.album);
-        html += '<div class="card" data-song="' + s.id + '">' +
-          '<div><span class="jp jpfont">' + esc(s.title) + '</span>' +
-          (s.kana ? '<span class="kana jpfont">' + esc(s.kana) + '</span>' : '') + '</div>' +
-          '<div class="meta">' + esc(al ? al.title : '未归档') +
-          (s.trackNo ? ' · Track ' + s.trackNo : '') + (s.year ? ' · ' + s.year : '') + '</div>' +
-          '<div class="desc">' + esc(plain(s.lead || '')) + '</div>' +
-          (s.tags && s.tags.length ? '<div class="tags">' +
-            s.tags.map(function (t) { return '<span class="tag-chip">' + esc(t) + '</span>'; }).join('') +
-            '</div>' : '') +
+        html += '<div class="card" data-song="' + s.id + '" style="--album:' + albumColor(al) + '">' +
+          coverHtml(al, 'm') +
+          '<div class="card-text">' +
+            '<div><span class="jp jpfont">' + esc(s.title) + '</span>' +
+            (s.kana ? '<span class="kana jpfont"> ' + esc(s.kana) + '</span>' : '') + '</div>' +
+            '<div class="meta">' + esc(al ? al.title : '未归档') +
+            (s.trackNo ? ' ・ Track ' + s.trackNo : '') + '</div>' +
+            '<div class="desc">' + esc(plain(s.lead || '')) + '</div>' +
+          '</div>' +
           '</div>';
       });
       html += '</div>';
@@ -229,14 +271,29 @@
     var mine = state.songs.filter(function (s) { return s.album === album.id; });
     var html = '<div class="crumb"><a href="#/">首页</a> › 专辑</div>';
 
-    html += '<div class="album-head-page">' +
-      '<h1 class="jpfont">' + esc(album.title) + '</h1>' +
-      '<div class="meta">' + esc(album.date) +
-      ' · ' + (album.kind === 'ost' ? '影视原声' : album.kind === 'single' ? '单曲' : '原创专辑') +
-      (album.total ? ' · 全 ' + album.total + ' 曲' : '') +
-      ' · 已解读 ' + mine.length + ' 首</div>' +
-      (album.note ? '<div class="note">' + esc(album.note) + '</div>' : '') +
-      '</div>';
+    var kindLabel = album.kind === 'ost' ? '影视原声' : album.kind === 'single' ? '单曲' : '原创专辑';
+    var kindKicker = album.kind === 'ost' ? 'SOUNDTRACK' : album.kind === 'single' ? 'SINGLE' : 'ALBUM';
+
+    html += '<div class="stage" style="--album:' + albumColor(album) + '">' +
+      '<span class="bar"></span><span class="wash"></span>' +
+      '<div class="head-row">' +
+        coverHtml(album, 'l') +
+        '<div class="head-text">' +
+          '<div class="kicker">' + kindKicker + '</div>' +
+          '<h1 class="jpfont">' + esc(album.title) + '</h1>' +
+          '<div class="kana">' + esc(album.date) + '</div>' +
+          '<div class="meta">' +
+            '<span>' + kindLabel + '</span>' +
+            (album.total ? '<span>全 ' + album.total + ' 曲</span>' : '') +
+            '<span>已解读 ' + mine.length + ' 首</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '</div>' +
+      (album.note
+        ? '<div class="note-card"><div class="note-label">专辑备忘</div>' +
+          '<div class="note-body">' + esc(album.note) + '</div></div>'
+        : '');
 
     if (album.tracks && album.tracks.length) {
       html += '<div class="track-table">';
@@ -277,19 +334,29 @@
       (al ? ' › <a href="#/album/' + al.id + '">' + esc(al.title) + '</a>' : '') +
       ' › ' + esc(song.title) + '</div>';
 
-    html += '<div class="song-head">' +
-      '<h1 class="jpfont">' + esc(song.title) + '</h1>' +
-      (song.kana || song.romaji
-        ? '<div class="kana jpfont">' + esc(song.kana) + (song.romaji ? '  /  ' + esc(song.romaji) : '') + '</div>'
-        : '') +
-      '<div class="meta">' +
-        (al ? '<span>' + esc(al.title) + '</span>' : '') +
-        (song.trackNo ? '<span>Track ' + song.trackNo + '</span>' : '') +
-        (song.year ? '<span>' + song.year + '</span>' : '') +
-        '<span>' + lineCount(song) + ' 句逐句解读</span>' +
+    html += '<div class="stage" style="--album:' + albumColor(al) + '">' +
+      '<span class="bar"></span><span class="wash"></span>' +
+      '<div class="head-row">' +
+        coverHtml(al, 'l') +
+        '<div class="head-text">' +
+          '<div class="kicker">' + esc(al ? al.title : '未归档') + '</div>' +
+          '<h1 class="jpfont">' + esc(song.title) + '</h1>' +
+          (song.kana || song.romaji
+            ? '<div class="kana jpfont">' + esc(song.kana) +
+              (song.romaji ? ' ／ ' + esc(song.romaji) : '') + '</div>'
+            : '<div class="kana"></div>') +
+          '<div class="meta">' +
+            (song.trackNo ? '<span>Track ' + song.trackNo + '</span>' : '') +
+            (song.year ? '<span>' + song.year + '</span>' : '') +
+            '<span>' + lineCount(song) + ' 句</span>' +
+          '</div>' +
+        '</div>' +
       '</div>' +
-      (song.lead ? '<div class="lead">' + song.lead + '</div>' : '') +
-      '</div>';
+      '</div>' +
+      (song.lead
+        ? '<div class="note-card"><div class="note-label">导读</div>' +
+          '<div class="note-body">' + song.lead + '</div></div>'
+        : '');
 
     /* 显示控制 */
     html += '<div class="controls">' +
@@ -477,9 +544,15 @@
   }
 
   function bindCards() {
-    document.querySelectorAll('[data-song]').forEach(function (el) {
+    var main = document.getElementById('main');
+    main.querySelectorAll('[data-song]').forEach(function (el) {
       el.addEventListener('click', function () {
         location.hash = '#/song/' + el.dataset.song;
+      });
+    });
+    main.querySelectorAll('[data-album]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        location.hash = '#/album/' + el.dataset.album;
       });
     });
   }
@@ -518,13 +591,15 @@
 
   /* ---------------- 启动 ---------------- */
   function init() {
-    /* 主题 */
-    var saved = localStorage.getItem('rw-theme');
+    /* 主题切换。localStorage 在部分环境（file:// 的 opaque origin、隐私模式、
+       被策略禁用）会直接抛异常，所以读写都要兜住——否则整个初始化会中断、页面空白。 */
+    var saved = null;
+    try { saved = localStorage.getItem('rw-theme'); } catch (e) { saved = null; }
     if (saved) document.documentElement.setAttribute('data-theme', saved);
     document.getElementById('theme').addEventListener('click', function () {
       var cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', cur);
-      localStorage.setItem('rw-theme', cur);
+      try { localStorage.setItem('rw-theme', cur); } catch (e) { /* 存不了就算了 */ }
       this.textContent = cur === 'dark' ? '亮' : '暗';
     });
     document.getElementById('theme').textContent =
@@ -546,8 +621,27 @@
     });
     /* 窄屏下点完导航自动收起 */
     sidebar.addEventListener('click', function (e) {
-      if (e.target.closest && e.target.closest('.album-head, .track')) sidebar.classList.remove('show');
+      if (e.target.closest && e.target.closest('.album-head, .track, .side-home')) sidebar.classList.remove('show');
     });
+
+    /* 悬浮「回到首页」（向下滚动后出现） */
+    var fab = document.getElementById('fab');
+    if (fab) {
+      var syncFab = function () {
+        fab.classList.toggle('show', window.scrollY > 420);
+      };
+      window.addEventListener('scroll', syncFab);
+      window.addEventListener('hashchange', function () { setTimeout(syncFab, 0); });
+      fab.addEventListener('click', function () {
+        var h = location.hash;
+        if (!h || h === '#/' || h === '#') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          location.hash = '#/';
+        }
+      });
+      syncFab();
+    }
 
     loadSongs(function () {
       /* 统计 */

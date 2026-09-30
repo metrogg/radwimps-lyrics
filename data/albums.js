@@ -54,7 +54,20 @@ window.RW_ALBUMS = [
     mark: '3',
     cover: 'assets/covers/radwimps3.jpg',
     note: '主流出道后第一张专辑，器乐全部现场同步录音。',
-    tracks: []
+    tracks: [
+      { no: 1,  title: '4645' },
+      { no: 2,  title: 'セプテンバーさん' },
+      { no: 3,  title: 'イーディーピー 〜飛んで火に入る夏の君〜' },
+      { no: 4,  title: '閉じた光' },
+      { no: 5,  title: '25コ目の染色体' },
+      { no: 6,  title: '揶揄' },
+      { no: 7,  title: '螢' },
+      { no: 8,  title: 'おとぎ' },
+      { no: 9,  title: '最大公約数', songId: 'saidaikouyakusu' },
+      { no: 10, title: 'へっくしゅん' },
+      { no: 11, title: 'トレモロ' },
+      { no: 12, title: '最後の歌' }
+    ]
   },
 
   {

@@ -1,0 +1,21 @@
+# 临时 / 校验文件
+_check.txt
+_smoke.txt
+_env.txt
+*.tmp
+*.log
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*~
+
+# 依赖（本站在设计上零依赖，留作保险）
+node_modules/
+package-lock.json

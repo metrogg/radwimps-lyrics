@@ -11,6 +11,7 @@ window.RW_SONGS.push({
 
   id: 'bokuchin',
   title: '僕チン',
+  titleZh: '小仆',
   kana: 'ぼくちん',
   romaji: 'Bokuchin',
   album: 'kiseki',

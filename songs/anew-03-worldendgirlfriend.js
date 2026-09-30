@@ -9,6 +9,7 @@ window.RW_SONGS.push({
 
   id: 'worldendgirlfriend',
   title: 'ワールドエンドガールフレンド',
+  titleZh: '世界末日女朋友',
   romaji: 'World End Girl Friend',
   album: 'anew',
   trackNo: 3,

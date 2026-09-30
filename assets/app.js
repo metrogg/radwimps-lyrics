@@ -150,7 +150,9 @@
         if (a.tracks && a.tracks.length) {
           a.tracks.forEach(function (t) {
             if (t.songId && songById(t.songId)) {
-              html += '<div class="track done" data-song="' + t.songId + '">' +
+              var ts = songById(t.songId);
+              html += '<div class="track done" data-song="' + t.songId + '"' +
+                ' title="' + esc(t.title + (ts.titleZh ? '／' + ts.titleZh : '')) + '">' +
                 '<span class="no">' + t.no + '</span><span class="t jpfont">' + esc(t.title) + '</span></div>';
             } else {
               html += '<div class="track"><span class="no">' + t.no + '</span>' +
@@ -247,8 +249,9 @@
           coverHtml(al, 'm') +
           '<div class="card-text">' +
             '<div><span class="jp jpfont">' + esc(s.title) + '</span>' +
-            (s.kana ? '<span class="kana jpfont"> ' + esc(s.kana) + '</span>' : '') + '</div>' +
+            (s.titleZh ? '<span class="t-zh">' + esc(s.titleZh) + '</span>' : '') + '</div>' +
             '<div class="meta">' + esc(al ? al.title : '未归档') +
+            (s.kana ? ' ・ ' + esc(s.kana) : '') +
             (s.trackNo ? ' ・ Track ' + s.trackNo : '') + '</div>' +
             '<div class="desc">' + esc(plain(s.lead || '')) + '</div>' +
           '</div>' +
@@ -306,7 +309,9 @@
         var s = t.songId ? songById(t.songId) : null;
         html += '<div class="track-row ' + (s ? 'done' : 'todo') + '"' + (s ? ' data-song="' + s.id + '"' : '') + '>' +
           '<span class="no">' + t.no + '</span>' +
-          '<span class="t jpfont">' + esc(t.title) + '</span>' +
+          '<span class="t jpfont">' + esc(t.title) +
+            (s && s.titleZh ? ' <span class="t-zh">' + esc(s.titleZh) + '</span>' : '') +
+          '</span>' +
           (s ? '<span class="badge">已解读</span>' : '<span class="badge g">待补充</span>') +
           '</div>';
       });
@@ -345,7 +350,9 @@
         coverHtml(al, 'l', true) +
         '<div class="head-text">' +
           '<div class="kicker">' + esc(al ? al.title : '未归档') + '</div>' +
-          '<h1 class="jpfont">' + esc(song.title) + '</h1>' +
+          '<h1 class="jpfont">' + esc(song.title) +
+            (song.titleZh ? '<span class="zh-title">' + esc(song.titleZh) + '</span>' : '') +
+          '</h1>' +
           (song.kana || song.romaji
             ? '<div class="kana jpfont">' + esc(song.kana) +
               (song.romaji ? ' ／ ' + esc(song.romaji) : '') + '</div>'
@@ -513,7 +520,8 @@
       var re = new RegExp('(' + h.hit.q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
       html += '<div class="result" data-song="' + h.song.id + '">' +
         '<div class="t jpfont">' + esc(h.song.title) +
-        ' <span class="kana" style="font-size:12px;color:var(--ink-faint)">' + esc(h.hit.kind) + '</span></div>' +
+        (h.song.titleZh ? ' <span class="t-zh">' + esc(h.song.titleZh) + '</span>' : '') +
+        ' <span class="hitkind">' + esc(h.hit.kind) + '</span></div>' +
         '<div class="ctx">' + esc(h.hit.ctx).replace(re, '<mark>$1</mark>') + '</div>' +
         '</div>';
     });
@@ -533,11 +541,13 @@
     var html = '<div class="songnav">';
     html += prev
       ? '<a class="nav" href="#/song/' + prev.id + '"><span class="dir">← 上一首</span>' +
-        '<span class="t jpfont">' + esc(prev.title) + '</span></a>'
+        '<span class="t jpfont">' + esc(prev.title) +
+        (prev.titleZh ? ' <span class="t-zh">' + esc(prev.titleZh) + '</span>' : '') + '</span></a>'
       : '<span class="nav empty"></span>';
     html += next
       ? '<a class="nav next" href="#/song/' + next.id + '"><span class="dir">下一首 →</span>' +
-        '<span class="t jpfont">' + esc(next.title) + '</span></a>'
+        '<span class="t jpfont">' + esc(next.title) +
+        (next.titleZh ? ' <span class="t-zh">' + esc(next.titleZh) + '</span>' : '') + '</span></a>'
       : '<span class="nav empty"></span>';
     return html + '</div>';
   }
@@ -571,7 +581,10 @@
 
     if ((m = h.match(/^song\/(.+)$/))) {
       var s = songById(m[1]);
-      if (s) { renderSong(s); pageTitle = s.title + ' ' + (s.romaji || ''); }
+      if (s) {
+        renderSong(s);
+        pageTitle = s.title + (s.titleZh ? ' ' + s.titleZh : '') + ' ' + (s.romaji || '');
+      }
       else { notFound('没有这首歌的数据：' + m[1]); }
     } else if ((m = h.match(/^album\/(.+)$/))) {
       var a = albumById(m[1]);

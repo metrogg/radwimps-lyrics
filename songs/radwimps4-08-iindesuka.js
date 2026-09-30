@@ -9,6 +9,7 @@ window.RW_SONGS.push({
 
   id: 'iindesuka',
   title: 'いいんですか?',
+  titleZh: '可以吗？',
   kana: 'いいんですか',
   romaji: 'Iindesuka?',
   album: 'radwimps4',

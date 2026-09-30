@@ -236,6 +236,24 @@ a.brand:hover .cn{color:var(--album);}
   padding-top:var(--s3);border-top:1px solid rgba(255,255,255,.14);
 }
 
+/* ---------------- 歌名中文译名 ---------------- */
+/* 舞台里：跟在日文原名后面的小字译名 */
+.zh-title{
+  display:inline-block;margin-left:var(--s3);vertical-align:middle;
+  font-size:var(--f-md);font-weight:400;letter-spacing:.02em;
+  color:rgba(255,255,255,.74);
+}
+/* 纸面上（卡片 / 曲目表 / 上下首 / 搜索结果）：淡色小字 */
+.t-zh{
+  margin-left:var(--s2);
+  font-size:var(--f-base);font-weight:400;
+  color:var(--ink-3);letter-spacing:.02em;
+}
+.hitkind{
+  margin-left:var(--s2);font-size:var(--f-xs);
+  color:var(--ink-3);letter-spacing:.08em;
+}
+
 /* ---------------- 批注卡 ---------------- */
 .note-card,.an,.point,.essay{
   background:var(--note);border-radius:var(--r-md);
@@ -504,6 +522,7 @@ rt{font-size:var(--f-xs);color:var(--ink-3);font-weight:400;}
   .main{padding:var(--s5) var(--s4) 100px;}
   .stage{padding:var(--s5) var(--s5) var(--s4);}
   .stage h1{font-size:var(--f-xl);}
+  .zh-title{display:block;margin-left:0;margin-top:var(--s1);}
   .cover.l{width:86px;height:86px;font-size:40px;}
   .head-row{gap:var(--s4);}
   .brand{min-width:auto;}

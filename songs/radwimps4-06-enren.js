@@ -11,6 +11,7 @@ window.RW_SONGS = window.RW_SONGS || [];
 window.RW_SONGS.push({
   "id": "enren",
   "title": "遠恋",
+  "titleZh": "远距离恋爱",
   "kana": "えんれん",
   "romaji": "Enren",
   "album": "radwimps4",

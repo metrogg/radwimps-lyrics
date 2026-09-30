@@ -93,16 +93,32 @@ a:hover{text-decoration:underline;}
   font-family:"Hiragino Mincho ProN","Yu Mincho","Songti SC",Georgia,serif;
   line-height:1;
 }
+/* 生成式封面的底部暗条（有真图时由 .photo 关掉） */
 .cover::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:20%;
   background:rgba(0,0,0,.16);
 }
-.cover > span{position:relative;z-index:1;}
+.cover > .mk{position:relative;z-index:1;}
 .cover.s{width:22px;height:22px;font-size:12px;}
-.cover.m{width:58px;height:58px;font-size:27px;}
-.cover.l{width:132px;height:132px;font-size:62px;}
-.cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.cover.m{width:64px;height:64px;font-size:28px;}
+.cover.l{width:148px;height:148px;font-size:66px;}
+
+/* 有封面图 */
+.cover.photo{background:var(--line-2);}
 .cover.photo::after{display:none;}
+.cover.photo > img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;}
+.cover.photo > .mk{display:none;}
+.cover.photo{box-shadow:0 1px 2px rgba(45,38,32,.12), 0 8px 22px rgba(45,38,32,.09);}
+[data-theme="dark"] .cover.photo{box-shadow:0 1px 2px rgba(0,0,0,.45), 0 8px 22px rgba(0,0,0,.32);}
+
+/* 图片加载失败 → 自动退回生成式封面 */
+.cover.photo.noimg{background:var(--album);box-shadow:none;}
+.cover.photo.noimg > img{display:none;}
+.cover.photo.noimg > .mk{display:block;}
+.cover.photo.noimg::after{display:block;}
+
+/* 侧边栏用的纯色块（导航不加载图片，保持轻快） */
+.swatch{width:10px;height:10px;border-radius:3px;flex:none;background:var(--album);}
 
 /* ---------------- topbar ---------------- */
 .topbar{
@@ -196,10 +212,10 @@ a.brand:hover .cn{color:var(--album);}
   margin-bottom:var(--s5);
 }
 .stage .bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--album);z-index:1;}
-.stage .wash{position:absolute;inset:0;background:var(--album);opacity:.2;pointer-events:none;}
+.stage .wash{position:absolute;inset:0;background:var(--album);opacity:.14;pointer-events:none;}
 .stage > *{position:relative;}
 .head-row{display:flex;gap:var(--s5);align-items:flex-start;}
-.head-row .cover{box-shadow:0 0 0 1px rgba(255,255,255,.16);}
+.head-row .cover{box-shadow:0 0 0 1px rgba(255,255,255,.18), 0 12px 32px rgba(0,0,0,.38);}
 .head-row .head-text{min-width:0;flex:1;}
 .stage .kicker{
   font-size:var(--f-xs);letter-spacing:.28em;color:rgba(255,255,255,.62);

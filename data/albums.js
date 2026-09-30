@@ -3,10 +3,12 @@
  *  ------------------------------------------------------------
  *  kind   : 'album' 原创专辑 / 'ost' 影视原声 / 'single' 单曲·EP
  *  total  : 曲目总数（用于显示收录进度）。不确定就填 null。
- *  accent : 专辑色相。用于歌曲页的"舞台"底色、侧边栏色块、封面底色。
- *  mark   : 生成式封面上显示的字符（仅在没有 cover 图片时使用）。
- *  cover  : 可选。填图片路径（如 'assets/covers/anew.jpg'）就显示真封面；
- *           留空则用 accent + mark 生成极简封面。
+ *  accent : 专辑色相。用于歌曲页"舞台"的底色、侧边栏色块、专辑墙进度条。
+ *           真封面出现的大尺寸位置（舞台 / 专辑页 / 卡片）由 cover 图片主导，
+ *           accent 退为衬托与点缀，所以这里统一取低饱和墨色系。
+ *  mark   : 没有封面图时，生成式封面上显示的字符。
+ *  cover  : 封面图路径。留空则用 accent + mark 生成极简封面。
+ *           图片放在 assets/covers/（当前用的是 560px 缩略图，站点最大显示 148px）。
  *  tracks : 可选。填了才会在专辑页显示完整曲目表；
  *           某首歌写完解读后，在对应曲目上加 songId 即可点亮跳转。
  * ============================================================ */
@@ -22,7 +24,7 @@ window.RW_ALBUMS = [
     total: null,
     accent: '#6B7F95',
     mark: 'R',
-    cover: '',
+    cover: 'assets/covers/radwimps1.jpg',
     note: '独立制作时期的第一张同名专辑。',
     tracks: []
   },
@@ -36,7 +38,7 @@ window.RW_ALBUMS = [
     total: null,
     accent: '#8A7F6B',
     mark: '2',
-    cover: '',
+    cover: 'assets/covers/radwimps2.jpg',
     note: '第二张专辑，同年 11 月以《25コ目の染色体》主流出道。',
     tracks: []
   },
@@ -50,7 +52,7 @@ window.RW_ALBUMS = [
     total: 12,
     accent: '#4A7F96',
     mark: '3',
-    cover: '',
+    cover: 'assets/covers/radwimps3.jpg',
     note: '主流出道后第一张专辑，器乐全部现场同步录音。',
     tracks: []
   },
@@ -64,7 +66,7 @@ window.RW_ALBUMS = [
     total: 14,
     accent: '#B04A3C',
     mark: '4',
-    cover: '',
+    cover: 'assets/covers/radwimps4.jpg',
     note: '第四张专辑。CD 版收录 14 曲，2025 年黑胶再版为 13 曲。',
     tracks: [
       { no: 1,  title: 'ふたりごと（一生に一度のワープ ver.）' },
@@ -93,7 +95,7 @@ window.RW_ALBUMS = [
     total: 13,
     accent: '#4A5B8C',
     mark: 'ア',
-    cover: '',
+    cover: 'assets/covers/altocolony.jpg',
     note: '',
     tracks: []
   },
@@ -107,7 +109,7 @@ window.RW_ALBUMS = [
     total: 14,
     accent: '#8F3A35',
     mark: '絶',
-    cover: '',
+    cover: 'assets/covers/zettaizetsumei.jpg',
     note: '',
     tracks: []
   },
@@ -121,8 +123,8 @@ window.RW_ALBUMS = [
     total: 15,
     accent: '#44403C',
     mark: '×',
-    cover: '',
-    note: '',
+    cover: 'assets/covers/batsutomaru.jpg',
+    note: '封面为竖版。',
     tracks: []
   },
 
@@ -135,7 +137,7 @@ window.RW_ALBUMS = [
     total: 15,
     accent: '#6F8F5A',
     mark: '人',
-    cover: '',
+    cover: 'assets/covers/ningenkaika.jpg',
     note: '',
     tracks: []
   },
@@ -149,7 +151,7 @@ window.RW_ALBUMS = [
     total: 17,
     accent: '#6B5B8F',
     mark: 'A',
-    cover: '',
+    cover: 'assets/covers/antianti.jpg',
     note: '',
     tracks: []
   },
@@ -163,7 +165,7 @@ window.RW_ALBUMS = [
     total: 14,
     accent: '#3D7F8F',
     mark: 'F',
-    cover: '',
+    cover: 'assets/covers/foreverdaze.jpg',
     note: '',
     tracks: []
   },
@@ -177,8 +179,8 @@ window.RW_ALBUMS = [
     total: 13,
     accent: '#3A4A7F',
     mark: 'N',
-    cover: '',
-    note: '时隔前作《FOREVER DAZE》约四年的原创专辑。曲目表待补充（已录入 Track 3）。',
+    cover: 'assets/covers/anew.jpg',
+    note: '日文标题《あにゅー》。时隔前作《FOREVER DAZE》约四年的原创专辑。曲目表待补充（已录入 Track 3）。',
     tracks: []
   },
 
@@ -192,7 +194,7 @@ window.RW_ALBUMS = [
     total: 27,
     accent: '#6F8FB0',
     mark: '名',
-    cover: '',
+    cover: 'assets/covers/kiminonawa.jpg',
     note: '新海誠監督《你的名字。》原声。',
     tracks: []
   },
@@ -205,7 +207,7 @@ window.RW_ALBUMS = [
     total: 31,
     accent: '#4A8FB0',
     mark: '天',
-    cover: '',
+    cover: 'assets/covers/tenkinoko.jpg',
     note: '新海誠監督《天气之子》原声。',
     tracks: []
   },
@@ -218,7 +220,7 @@ window.RW_ALBUMS = [
     total: 30,
     accent: '#8F7F8A',
     mark: '余',
-    cover: '',
+    cover: 'assets/covers/yomei10.jpg',
     note: '',
     tracks: []
   },
@@ -231,7 +233,7 @@ window.RW_ALBUMS = [
     total: 29,
     accent: '#8F5A4A',
     mark: 'す',
-    cover: '',
+    cover: 'assets/covers/suzume.jpg',
     note: '新海誠監督《铃芽之旅》原声。',
     tracks: []
   },
@@ -247,7 +249,7 @@ window.RW_ALBUMS = [
     accent: '#7D8A72',
     mark: '祈',
     cover: '',
-    note: '独立时期第 2 张单曲（品番 YYCM-104）。《僕チン》为其中收录曲，写于野田十几岁时。',
+    note: '独立时期第 2 张单曲（品番 YYCM-104）。《僕チン》为其中收录曲，写于野田十几岁时。此张暂无封面图，使用生成式封面。',
     tracks: [
       { no: 1, title: '祈跡' },
       { no: 2, title: '僕チン', songId: 'bokuchin' }

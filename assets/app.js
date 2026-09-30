@@ -57,17 +57,22 @@
     return (al && al.accent) ? al.accent : '#b04a3c';
   }
 
-  /* 封面：albums.js 填了 cover 图片就显示图片，
-     否则用 accent + mark 生成极简封面（不依赖任何外部资源） */
-  function coverHtml(al, size) {
+  /* 封面：albums.js 填了 cover 就加载图片（加载失败自动退回生成式封面），
+     否则直接用 accent + mark 生成。mark 始终在 DOM 里，作为降级内容。
+     eager=true 用于首屏（舞台/专辑页头部），列表里一律懒加载。 */
+  function coverHtml(al, size, eager) {
     var cls = 'cover ' + (size || 'm');
     var accent = albumColor(al);
+    var mark = '<span class="mk">' + esc((al && al.mark) ? al.mark : '·') + '</span>';
     if (al && al.cover) {
       return '<span class="' + cls + ' photo" style="--album:' + accent + '">' +
-             '<img src="' + esc(al.cover) + '" alt="' + esc(al.title) + ' 封面"></span>';
+             '<img src="' + esc(al.cover) + '" alt="' + esc(al.title) + ' 封面"' +
+             (eager ? '' : ' loading="lazy"') +
+             ' decoding="async"' +
+             ' onerror="this.parentNode.classList.add(\'noimg\')">' +
+             mark + '</span>';
     }
-    return '<span class="' + cls + '" style="--album:' + accent + '" aria-hidden="true">' +
-           '<span>' + esc((al && al.mark) ? al.mark : '·') + '</span></span>';
+    return '<span class="' + cls + '" style="--album:' + accent + '" aria-hidden="true">' + mark + '</span>';
   }
 
   function songById(id) {
@@ -136,7 +141,7 @@
         var open = state.openAlbum === a.id;
         html += '<div class="album-item' + (open ? ' open' : '') + '">';
         html += '<div class="album-head' + (open ? ' active' : '') + '" data-album="' + a.id + '">' +
-          coverHtml(a, 's') +
+          '<span class="swatch" style="background:' + albumColor(a) + '"></span>' +
           '<span class="t jpfont">' + esc(a.title) + '</span>' +
           (a.total ? '<span class="y">' + n + '/' + a.total + '</span>' : '<span class="y">' + a.year + '</span>') +
           '<span class="arrow">' + (open ? '▾' : '▸') + '</span>' +
@@ -277,7 +282,7 @@
     html += '<div class="stage" style="--album:' + albumColor(album) + '">' +
       '<span class="bar"></span><span class="wash"></span>' +
       '<div class="head-row">' +
-        coverHtml(album, 'l') +
+        coverHtml(album, 'l', true) +
         '<div class="head-text">' +
           '<div class="kicker">' + kindKicker + '</div>' +
           '<h1 class="jpfont">' + esc(album.title) + '</h1>' +
@@ -337,7 +342,7 @@
     html += '<div class="stage" style="--album:' + albumColor(al) + '">' +
       '<span class="bar"></span><span class="wash"></span>' +
       '<div class="head-row">' +
-        coverHtml(al, 'l') +
+        coverHtml(al, 'l', true) +
         '<div class="head-text">' +
           '<div class="kicker">' + esc(al ? al.title : '未归档') + '</div>' +
           '<h1 class="jpfont">' + esc(song.title) + '</h1>' +

@@ -99,7 +99,7 @@ a:hover{text-decoration:underline;}
   background:rgba(0,0,0,.16);
 }
 .cover > .mk{position:relative;z-index:1;}
-.cover.s{width:22px;height:22px;font-size:12px;}
+.cover.s{width:26px;height:26px;font-size:13px;border-radius:4px;}
 .cover.m{width:64px;height:64px;font-size:28px;}
 .cover.l{width:148px;height:148px;font-size:66px;}
 
@@ -158,7 +158,7 @@ a.brand:hover .cn{color:var(--album);}
 .layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;}
 .sidebar{
   position:sticky;top:57px;
-  width:274px;flex:0 0 274px;height:calc(100vh - 57px);
+  width:296px;flex:0 0 296px;height:calc(100vh - 57px);
   overflow-y:auto;padding:var(--s5) var(--s3) 60px;
   border-right:1px solid var(--line);
   background:var(--paper);
@@ -495,6 +495,7 @@ rt{font-size:var(--f-xs);color:var(--ink-3);font-weight:400;}
 @media (max-width:900px){
   .sidebar{
     position:fixed;left:0;top:57px;z-index:40;
+    width:280px;flex-basis:280px;
     transform:translateX(-100%);transition:transform .2s;
     box-shadow:2px 0 12px rgba(0,0,0,.12);
   }

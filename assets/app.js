@@ -140,8 +140,8 @@
         var n = songCount(a);
         var open = state.openAlbum === a.id;
         html += '<div class="album-item' + (open ? ' open' : '') + '">';
-        html += '<div class="album-head' + (open ? ' active' : '') + '" data-album="' + a.id + '">' +
-          '<span class="swatch" style="background:' + albumColor(a) + '"></span>' +
+        html += '<div class="album-head' + (open ? ' active' : '') + '" data-album="' + a.id + '" title="' + esc(a.title) + '">' +
+          coverHtml(a, 's') +
           '<span class="t jpfont">' + esc(a.title) + '</span>' +
           (a.total ? '<span class="y">' + n + '/' + a.total + '</span>' : '<span class="y">' + a.year + '</span>') +
           '<span class="arrow">' + (open ? '▾' : '▸') + '</span>' +

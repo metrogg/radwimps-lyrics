@@ -34,6 +34,9 @@ radwimps-lyrics/
 │   └── radwimps4-06-enren.js
 ├── tools/
 │   └── import-from-html.js 把一份手写解读 HTML 转成歌曲数据文件
+├── archive/
+│   └── radwimps-enren-analysis.html
+│                        最早期的手写单页版（import 脚本的样例输入）
 └── README.md
 ```
 
@@ -136,8 +139,8 @@ window.RW_FILES = [
 ```bash
 node tools/import-from-html.js <源HTML路径> <输出.js> <songId>
 
-# 例
-node tools/import-from-html.js ../radwimps-enren-analysis.html songs/radwimps4-07-setsunarensa.js setsunarensa
+# 例（archive/ 里的那份单页手稿就是可以拿来试的输入）
+node tools/import-from-html.js archive/radwimps-enren-analysis.html songs/radwimps4-07-setsunarensa.js setsunarensa
 ```
 
 它会识别 `.intro / h2 / .sec-note / .line / .jp / .ro / .zh / .an / .point / .essay`

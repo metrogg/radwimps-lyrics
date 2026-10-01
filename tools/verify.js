@@ -54,6 +54,14 @@ const cases = [
       '逐句块': d.querySelectorAll('.line').length,
       '语言点': d.querySelectorAll('.point').length,
       '整体解读': d.querySelectorAll('.essay').length
+    }) },
+  { name: '歌曲页 25コ目の染色体', hash: '#/song/nijuugoko', check: (d) => ({
+      '舞台': d.querySelectorAll('.stage').length,
+      '逐句块': d.querySelectorAll('.line').length,
+      '假名标注': d.querySelectorAll('.jp ruby rt').length,
+      '批注卡': d.querySelectorAll('.an').length,
+      '语言点': d.querySelectorAll('.point').length,
+      '整体解读': d.querySelectorAll('.essay').length
     }) }
 ];
 

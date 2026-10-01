@@ -18,6 +18,7 @@ desktop.ini
 *.swp
 *~
 
-# 依赖（本站在设计上零依赖，留作保险）
+# 依赖（本站在设计上零依赖；jsdom 只是本地跑 tools/verify.js 用的，不进仓库）
 node_modules/
+package.json
 package-lock.json
